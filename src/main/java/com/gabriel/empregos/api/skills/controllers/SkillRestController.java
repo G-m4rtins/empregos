@@ -26,14 +26,14 @@ public class SkillRestController {
     public List<SkillResponse> findAll() {
         return skillRepository.findAll()
                 .stream()
-                .map(skillMapper::toSkillResponse)
+                .map(skill -> skillMapper.toSkillResponse(skill))
                 .toList();
         
     }
 
     @GetMapping("/{id}")
     public SkillResponse findById(@PathVariable Long id) {
-        return skillRepository.findById(id).map(skillMapper::toSkillResponse)
+        return skillRepository.findById(id).map(skill -> skillMapper.toSkillResponse(skill))
                 .orElseThrow(SkillNotFoundException::new);
 
     }
