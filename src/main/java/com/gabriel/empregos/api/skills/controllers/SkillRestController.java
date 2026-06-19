@@ -3,11 +3,13 @@ package com.gabriel.empregos.api.skills.controllers;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gabriel.empregos.api.skills.dtos.SkillResponse;
 import com.gabriel.empregos.api.skills.mappers.SkillMapper;
+import com.gabriel.empregos.core.exceptions.SkillNotFoundException;
 import com.gabriel.empregos.core.repositories.SkillRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,13 @@ public class SkillRestController {
                 .map(skillMapper::toSkillResponse)
                 .toList();
         
+    }
+
+    @GetMapping("/{id}")
+    public SkillResponse findById(@PathVariable Long id) {
+        return skillRepository.findById(id).map(skillMapper::toSkillResponse)
+                .orElseThrow(SkillNotFoundException::new);
+
     }
 
 }
