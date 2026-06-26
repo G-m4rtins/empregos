@@ -3,9 +3,6 @@ package com.gabriel.empregos.config;
 import java.util.List;
 
 import org.modelmapper.Converter;
-
-import com.gabriel.empregos.api.jobs.dtos.JobRequest;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
