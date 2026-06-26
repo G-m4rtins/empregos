@@ -60,6 +60,6 @@ public class Job {
     private BigDecimal salary;
 
     @ManyToMany
-    private List<skills> skills;
+    private List<Skills> skills;
 
 }

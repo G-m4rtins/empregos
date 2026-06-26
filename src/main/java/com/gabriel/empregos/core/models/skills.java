@@ -13,17 +13,17 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Builder 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class skills {
+public class Skills {
 
     @Id
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(nullable = false, unique = true, length = 100)
     private String name;
 

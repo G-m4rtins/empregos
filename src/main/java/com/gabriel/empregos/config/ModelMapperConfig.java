@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.gabriel.empregos.api.jobs.dtos.JobRequest;
 import com.gabriel.empregos.core.models.Job;
-import com.gabriel.empregos.core.models.skills;
+import com.gabriel.empregos.core.models.Skills;
 import com.gabriel.empregos.core.repositories.SkillRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class ModelMapperConfig {
         return modelMapper;
     }
 
-    private Converter<List<Long>, List<skills>> toListOfSkills() {
+    private Converter<List<Long>, List<Skills>> toListOfSkills() {
         return context -> skillRepository.findAllById(context.getSource());
     }
 
