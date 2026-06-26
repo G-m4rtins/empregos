@@ -39,6 +39,9 @@ public class Job {
     @Column(nullable = false, length = 100)
     private String title;
 
+    @Column(nullable = false, length = 255)
+    private String description;
+
     @Column(nullable = false, length = 50)
     private String company;
 
@@ -58,5 +61,5 @@ public class Job {
 
     @ManyToMany
     private List<skills> skills;
-    
+
 }
