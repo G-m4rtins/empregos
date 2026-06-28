@@ -3,11 +3,13 @@ package com.gabriel.empregos.api.jobs.controllers;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gabriel.empregos.api.jobs.dtos.JobResponse;
 import com.gabriel.empregos.api.jobs.mappers.JobMapper;
+import com.gabriel.empregos.core.exceptions.JobNotFoundException;
 import com.gabriel.empregos.core.repositories.JobRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,15 @@ public class JobRestController {
         .toList();
 
         return jobs;
+    }
+
+    @GetMapping("/{id}")
+    public JobResponse findById(@PathVariable Long id) {
+        var job = jobRepository.findById(id)
+            .orElseThrow( () -> new JobNotFoundException(id) );
+
+
+        return jobMapper.toJobResponse(job);
     }
 
 }
