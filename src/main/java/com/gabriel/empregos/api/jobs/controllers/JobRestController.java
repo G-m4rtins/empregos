@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gabriel.empregos.api.jobs.dtos.JobRequest;
 import com.gabriel.empregos.api.jobs.dtos.JobResponse;
 import com.gabriel.empregos.api.jobs.mappers.JobMapper;
+import com.gabriel.empregos.api.skills.dtos.SkillResponse;
+import com.gabriel.empregos.api.skills.mappers.SkillMapper;
 import com.gabriel.empregos.core.exceptions.JobNotFoundException;
 import com.gabriel.empregos.core.repositories.JobRepository;
 
