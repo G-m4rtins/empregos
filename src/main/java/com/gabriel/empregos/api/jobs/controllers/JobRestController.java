@@ -2,7 +2,9 @@ package com.gabriel.empregos.api.jobs.controllers;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import com.gabriel.empregos.core.repositories.JobRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -54,5 +57,26 @@ public class JobRestController {
         var job = jobMapper.toJob(jobRequest);
         job = jobRepository.save(job);
         return jobMapper.toJobResponse(job);
+    }
+
+    @PutMapping("/{id}")
+    public JobResponse update(@PathVariable Long id, @RequestBody @Valid JobRequest jobRequest) {
+        var job = jobRepository.findById(id)
+            .orElseThrow( () -> new JobNotFoundException(id) );
+
+        var jobDate = jobMapper.toJob(jobRequest);
+        BeanUtils.copyProperties(jobDate, job, "id");
+        job = jobRepository.save(job);
+
+        return jobMapper.toJobResponse(job);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        var job = jobRepository.findById(id)
+            .orElseThrow( () -> new JobNotFoundException(id) );
+
+        jobRepository.delete(job);
     }
 }
