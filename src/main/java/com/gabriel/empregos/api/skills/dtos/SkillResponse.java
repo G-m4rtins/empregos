@@ -1,8 +1,5 @@
 package com.gabriel.empregos.api.skills.dtos;
 
-
-import org.springframework.hateoas.RepresentationModel;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class SkillResponse extends RepresentationModel<SkillResponse> {
+public class SkillResponse{
 
     private Long id;
     private String name;
