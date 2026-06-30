@@ -1,6 +1,8 @@
 package com.gabriel.empregos.api.skills.controllers;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,15 +35,14 @@ public class SkillRestController {
     private final SkillMapper skillMapper;
     private final SkillRepository skillRepository;
     private final SkillAssembler skillassembler;
+    private final PagedResourcesAssembler<SkillResponse> pagedResourcesAssembler;
 
     @GetMapping
-    public CollectionModel<EntityModel<SkillResponse>> findAll() {
-        var skills = skillRepository.findAll()
-                .stream()
-                .map(skillMapper::toSkillResponse)
-                .toList();
+    public CollectionModel<EntityModel<SkillResponse>> findAll( Pageable pageable ) {
+        var skills = skillRepository.findAll( pageable )
+                .map(skillMapper::toSkillResponse);
 
-        return skillassembler.toCollectionModel(skills);
+        return pagedResourcesAssembler.toModel(skills, skillassembler );
     }
 
     @GetMapping("/{id}")
