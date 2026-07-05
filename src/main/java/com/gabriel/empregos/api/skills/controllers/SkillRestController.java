@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.gabriel.empregos.api.skills.assemblers.SkillAssembler;
 import com.gabriel.empregos.api.skills.dtos.SkillRequest;
@@ -56,6 +57,7 @@ public class SkillRestController {
 
     @PostMapping
     @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('COMPANY')")
     public EntityModel<SkillResponse> create(@Valid @RequestBody SkillRequest skillRequest) {
         var skill = skillMapper.toSkill(skillRequest);
         var savedSkill = skillRepository.save(skill);
@@ -65,6 +67,7 @@ public class SkillRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public EntityModel<SkillResponse> update(@PathVariable Long id, @Valid @RequestBody SkillRequest skillRequest) {
         var existingSkill = skillRepository
                             .findById(id)
@@ -79,6 +82,7 @@ public class SkillRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         var existingSkill = skillRepository
                             .findById(id)

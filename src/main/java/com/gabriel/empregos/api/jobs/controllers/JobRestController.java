@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +54,7 @@ public class JobRestController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('COMPANY')")
     public JobResponse create(@RequestBody @Valid JobRequest jobRequest) {
         var job = jobMapper.toJob(jobRequest);
         job = jobRepository.save(job);
@@ -60,6 +62,7 @@ public class JobRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('COMPANY')")
     public JobResponse update(@PathVariable Long id, @RequestBody @Valid JobRequest jobRequest) {
         var job = jobRepository.findById(id)
             .orElseThrow( () -> new JobNotFoundException(id) );
@@ -73,6 +76,7 @@ public class JobRestController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('COMPANY')")
     public void delete(@PathVariable Long id) {
         var job = jobRepository.findById(id)
             .orElseThrow( () -> new JobNotFoundException(id) );
