@@ -16,8 +16,13 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(customizer -> customizer
                 .anyRequest().permitAll()
-        ).build();
+        )
+        .csrf(customizer -> customizer
+            .disable()
+        )
+        .build();
     }
+
 
 }
 
