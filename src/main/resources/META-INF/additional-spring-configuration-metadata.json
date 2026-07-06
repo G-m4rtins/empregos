@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "jwt.access-secret",
+    "type": "java.lang.String",
+    "description": "Chave Secreta para gerar o token de acesso"
+  },
+  {
+    "name": "jwt.access-expires-in",
+    "type": "java.lang.String",
+    "description": "Tempo de expiração do token de acesso"
+  }
+]}
