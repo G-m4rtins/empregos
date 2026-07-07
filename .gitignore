@@ -1,5 +1,6 @@
 HELP.md
 target/
+requests/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -46,3 +47,6 @@ Thumbs.db
 node_modules/
 dist/
 build/
+
+
+.http
