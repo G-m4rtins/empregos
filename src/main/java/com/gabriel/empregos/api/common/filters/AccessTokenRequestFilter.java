@@ -11,6 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.gabriel.empregos.core.services.jwt.JwtService;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,18 +35,22 @@ public class AccessTokenRequestFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        var token = "";
-        var email = "";
-        var header = request.getHeader(AUTHORIZATION_HEADER_KEY);
+        try {
+            var token = "";
+            var email = "";
+            var header = request.getHeader(AUTHORIZATION_HEADER_KEY);
 
-        if (isTokenPresent(header)) {
-            token = header.substring(TOKEN_PREFIX.length());
-            email = jwtService.getSubFromAccessToken(token);
+            if (isTokenPresent(header)) {
+                token = header.substring(TOKEN_PREFIX.length());
+                email = jwtService.getSubFromAccessToken(token);
+            }
+            if (isEmailValid(email)) {
+                setAuthentication(request, email);
+            }
+            filterChain.doFilter(request, response);
+        } catch (JwtException e) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getLocalizedMessage());
         }
-        if (isEmailValid(email)) {
-            setAuthentication(request, email);
-        }
-        filterChain.doFilter(request, response);
     }
 
     private void setAuthentication(HttpServletRequest request, String email) {
