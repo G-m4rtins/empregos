@@ -1,0 +1,30 @@
+@baseUrl = http://localhost:8080/api/skills
+@token = SEU_TOKEN_AQUI
+
+### Listar todas as habilidades (Paginado)
+GET {{baseUrl}}?page=0&size=10
+
+### Buscar habilidade por ID
+GET {{baseUrl}}/1
+
+### Criar uma habilidade (Requer Role COMPANY)
+POST {{baseUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Java"
+}
+
+### Atualizar uma habilidade (Requer Role COMPANY)
+PUT {{baseUrl}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "Spring Boot"
+}
+
+### Deletar uma habilidade (Requer Role COMPANY)
+DELETE {{baseUrl}}/1
+Authorization: Bearer {{token}}

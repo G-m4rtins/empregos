@@ -1,0 +1,44 @@
+@baseUrl = http://localhost:8080/api/jobs
+@token = SEU_TOKEN_AQUI
+
+### Listar todas as vagas
+GET {{baseUrl}}
+
+### Buscar vaga por ID
+GET {{baseUrl}}/1
+
+### Criar uma vaga (Requer Role COMPANY)
+POST {{baseUrl}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Desenvolvedor Backend Java",
+    "description": "Responsável por desenvolver e manter APIs usando Spring Boot.",
+    "company": "Tech Innovations",
+    "location": "São Paulo - SP (Remoto)",
+    "jobType": "FULL_TIME",
+    "jobLevel": "MID_LEVEL",
+    "salary": 8500.00,
+    "skills": [1, 2]
+}
+
+### Atualizar uma vaga (Requer Role COMPANY)
+PUT {{baseUrl}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "title": "Desenvolvedor Backend Java Senior",
+    "description": "Responsável por arquitetar e desenvolver APIs usando Spring Boot.",
+    "company": "Tech Innovations",
+    "location": "São Paulo - SP (Remoto)",
+    "jobType": "FULL_TIME",
+    "jobLevel": "SENIOR",
+    "salary": 12000.00,
+    "skills": [1, 2, 3]
+}
+
+### Deletar uma vaga (Requer Role COMPANY)
+DELETE {{baseUrl}}/1
+Authorization: Bearer {{token}}
