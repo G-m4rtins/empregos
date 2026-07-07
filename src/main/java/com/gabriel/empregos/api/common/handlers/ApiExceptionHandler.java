@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.gabriel.empregos.api.common.dtos.ErrorResponse;
 import com.gabriel.empregos.api.common.dtos.ValidationErrorResponse;
+import com.gabriel.empregos.core.exceptions.JwtServiceException;
 import com.gabriel.empregos.core.exceptions.ModelNotFoundException;
 
 @RestControllerAdvice
@@ -38,6 +39,14 @@ public class ApiExceptionHandler {
                 return ValidationErrorResponse.builder()
                                 .message("Validation failed")
                                 .errors(errors)
+                                .build();
+        }
+
+        @ExceptionHandler(JwtServiceException.class)
+        @ResponseStatus(HttpStatus.UNAUTHORIZED)
+        public ErrorResponse handleJwtServiceException(JwtServiceException ex) {
+                return ErrorResponse.builder()
+                                .message(ex.getLocalizedMessage())
                                 .build();
         }
 

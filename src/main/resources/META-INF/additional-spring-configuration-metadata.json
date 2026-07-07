@@ -1,12 +1,24 @@
-{"properties": [
-  {
-    "name": "jwt.access-secret",
-    "type": "java.lang.String",
-    "description": "Chave Secreta para gerar o token de acesso"
-  },
-  {
-    "name": "jwt.access-expires-in",
-    "type": "java.lang.String",
-    "description": "Tempo de expiração do token de acesso"
-  }
-]}
+{
+  "properties": [
+    {
+      "name": "jwt.access-secret",
+      "type": "java.lang.String",
+      "description": "Chave secreta para gerar o token de acesso"
+    },
+    {
+      "name": "jwt.access-expires-in",
+      "type": "java.lang.String",
+      "description": "Tempo de expiração do token de acesso"
+    },
+    {
+      "name": "jwt.refresh-secret",
+      "type": "java.lang.String",
+      "description": "Chave secreta para gerar o token de atualização"
+    },
+    {
+      "name": "jwt.refresh-expires-in",
+      "type": "java.lang.Long",
+      "description": "Tempo de expiração do token de atualização"
+    }
+  ]
+}

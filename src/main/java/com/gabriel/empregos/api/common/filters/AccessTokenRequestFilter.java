@@ -68,7 +68,7 @@ public class AccessTokenRequestFilter extends OncePerRequestFilter {
     }
 
     private boolean isTokenPresent(String header) {
-        return header != null || header.startsWith(TOKEN_PREFIX);
+        return header != null && header.startsWith(TOKEN_PREFIX);
     }
 
 }

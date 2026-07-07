@@ -1,5 +1,6 @@
 package com.gabriel.empregos.api.auth.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenResponse {
+public class RefreshRequest {
 
-    private String accessToken;
+    @NotBlank(message = "Refresh token is required")
     private String refreshToken;
 
 }
