@@ -1,7 +1,8 @@
-package com.gabriel.empregos.api.jobs.common.dtos;
+package com.gabriel.empregos.api.common.dtos;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,13 +11,15 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ErrorResponse {
+@NoArgsConstructor
+public class ValidationErrorResponse {
 
     private String message;
 
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
+
+    private Map<String, List<String>> errors;
 
 }
