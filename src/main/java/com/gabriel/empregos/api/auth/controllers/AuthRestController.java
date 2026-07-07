@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gabriel.empregos.api.auth.dtos.LoginRequest;
+import com.gabriel.empregos.api.auth.dtos.RefreshRequest;
 import com.gabriel.empregos.api.auth.dtos.TokenResponse;
 import com.gabriel.empregos.api.auth.dtos.UserRequest;
 import com.gabriel.empregos.api.auth.dtos.UserResponse;
@@ -53,6 +54,17 @@ public class AuthRestController {
 
         return TokenResponse.builder()
                 .accessToken(jwtService.generateAccessToken(loginRequest.getEmail()))
+                .refreshToken(jwtService.generateRefreshToken(loginRequest.getEmail()))
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    @ResponseStatus(code = HttpStatus.OK)
+    public TokenResponse refresh(@RequestBody @Valid RefreshRequest refreshRequest) {
+        var subject = jwtService.getSubFromRefreshToken(refreshRequest.getRefreshToken());
+        return TokenResponse.builder()
+                .accessToken(jwtService.generateAccessToken(subject))
+                .refreshToken(jwtService.generateRefreshToken(subject))
                 .build();
     }
 

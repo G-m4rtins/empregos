@@ -20,15 +20,7 @@ public class JjwtJwtService implements JwtService {
 
     @Override
     public String generateAccessToken(String sub) {
-        var now = Instant.now();
-        var expiration = now.plusMillis(jwtConfigProperties.getAccessExpiresIn());
-        var key = Keys.hmacShaKeyFor(jwtConfigProperties.getAccessSecret().getBytes());
-        return Jwts.builder()
-                .setSubject(sub)
-                .issuedAt(Date.from(now))
-                .setExpiration(Date.from(expiration))
-                .signWith(key)
-                .compact();
+        return generateToken(sub, jwtConfigProperties.getAccessSecret(), jwtConfigProperties.getAccessExpiresIn());
     }
 
     @Override
@@ -43,9 +35,46 @@ public class JjwtJwtService implements JwtService {
                     .getPayload()
                     .getSubject();
         } catch (Exception e) {
-                throw new JwtServiceException("Invalid JWT token");
+            throw new JwtServiceException("Invalid JWT token");
         }
 
+    }
+
+    @Override
+    public String generateRefreshToken(String sub) {
+        return generateToken(sub, jwtConfigProperties.getRefreshSecret(), jwtConfigProperties.getRefreshExpiresIn());
+    }
+
+    @Override
+    public String getSubFromRefreshToken(String token) {
+        return getSubFromToken(token, jwtConfigProperties.getRefreshSecret());
+    }
+
+    private String generateToken(String sub, String secret, Long expiresIn) {
+        var now = Instant.now();
+        var expiration = now.plusMillis(expiresIn);
+        var key = Keys.hmacShaKeyFor(secret.getBytes());
+        return Jwts.builder()
+                .setSubject(sub)
+                .issuedAt(Date.from(now))
+                .setExpiration(Date.from(expiration))
+                .signWith(key)
+                .compact();
+    }
+
+    private String getSubFromToken(String token, String secret) {
+        var key = Keys.hmacShaKeyFor(secret.getBytes());
+
+        try {
+            return Jwts.parser()
+                    .verifyWith(key)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getSubject();
+        } catch (Exception e) {
+            throw new JwtServiceException("Invalid JWT token");
+        }
     }
 
 }
