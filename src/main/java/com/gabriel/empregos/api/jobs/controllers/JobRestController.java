@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +18,13 @@ import com.gabriel.empregos.api.jobs.dtos.JobResponse;
 import com.gabriel.empregos.api.jobs.mappers.JobMapper;
 import com.gabriel.empregos.core.exceptions.JobNotFoundException;
 import com.gabriel.empregos.core.repositories.JobRepository;
+import com.gabriel.empregos.core.services.auth.AuthenticatedUser;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -36,9 +37,9 @@ public class JobRestController {
     @GetMapping
     public List<JobResponse> findAll() {
         var jobs = jobRepository.findAll()
-        .stream()
-        .map(jobMapper::toJobResponse)
-        .toList();
+                .stream()
+                .map(jobMapper::toJobResponse)
+                .toList();
 
         return jobs;
     }
@@ -46,8 +47,7 @@ public class JobRestController {
     @GetMapping("/{id}")
     public JobResponse findById(@PathVariable Long id) {
         var job = jobRepository.findById(id)
-            .orElseThrow( () -> new JobNotFoundException(id) );
-
+                .orElseThrow(() -> new JobNotFoundException(id));
 
         return jobMapper.toJobResponse(job);
     }
@@ -55,8 +55,10 @@ public class JobRestController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('COMPANY')")
-    public JobResponse create(@RequestBody @Valid JobRequest jobRequest) {
+    public JobResponse create(@RequestBody @Valid JobRequest jobRequest, Authentication authentication) {
         var job = jobMapper.toJob(jobRequest);
+        var user = (AuthenticatedUser) authentication.getPrincipal();
+        job.setCompany(user.getUser());
         job = jobRepository.save(job);
         return jobMapper.toJobResponse(job);
     }
@@ -65,10 +67,10 @@ public class JobRestController {
     @PreAuthorize("hasAuthority('COMPANY')")
     public JobResponse update(@PathVariable Long id, @RequestBody @Valid JobRequest jobRequest) {
         var job = jobRepository.findById(id)
-            .orElseThrow( () -> new JobNotFoundException(id) );
+                .orElseThrow(() -> new JobNotFoundException(id));
 
         var jobDate = jobMapper.toJob(jobRequest);
-        BeanUtils.copyProperties(jobDate, job, "id");
+        BeanUtils.copyProperties(jobDate, job, "id", "company", "candidates");
         job = jobRepository.save(job);
 
         return jobMapper.toJobResponse(job);
@@ -79,7 +81,7 @@ public class JobRestController {
     @PreAuthorize("hasAuthority('COMPANY')")
     public void delete(@PathVariable Long id) {
         var job = jobRepository.findById(id)
-            .orElseThrow( () -> new JobNotFoundException(id) );
+                .orElseThrow(() -> new JobNotFoundException(id));
 
         jobRepository.delete(job);
     }
