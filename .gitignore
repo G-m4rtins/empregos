@@ -50,3 +50,4 @@ build/
 
 
 .http
+requests/auth.http
