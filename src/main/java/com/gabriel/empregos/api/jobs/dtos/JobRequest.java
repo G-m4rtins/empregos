@@ -30,10 +30,6 @@ public class JobRequest {
 
     @NotEmpty
     @Size(min = 3, max = 100)
-    private String company;
-
-    @NotEmpty
-    @Size(min = 3, max = 100)
     private String location;
 
     @NotNull
@@ -47,6 +43,5 @@ public class JobRequest {
 
     @NotEmpty
     private List<Long> skills;
-
 
 }

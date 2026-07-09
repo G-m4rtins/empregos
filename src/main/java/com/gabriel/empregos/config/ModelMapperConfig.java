@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.modelmapper.ModelMapper;
 import com.gabriel.empregos.api.jobs.dtos.JobRequest;
+import com.gabriel.empregos.api.jobs.dtos.JobResponse;
 import com.gabriel.empregos.core.models.Job;
 import com.gabriel.empregos.core.models.Skills;
 import com.gabriel.empregos.core.repositories.SkillRepository;
@@ -24,10 +25,13 @@ public class ModelMapperConfig {
         var modelMapper = new org.modelmapper.ModelMapper();
 
         modelMapper.createTypeMap(JobRequest.class, Job.class)
-            .addMappings(mapper -> mapper
-                .using(toListOfSkills())
-                .map(JobRequest::getSkills, Job::setSkills)
-        );
+                .addMappings(mapper -> mapper
+                        .using(toListOfSkills())
+                        .map(JobRequest::getSkills, Job::setSkills));
+        modelMapper.createTypeMap(Job.class, JobResponse.class)
+                .addMappings(mapper -> mapper
+                        .map(src -> src.getCompany().getName(), JobResponse::setCompany));
+
         return modelMapper;
     }
 
