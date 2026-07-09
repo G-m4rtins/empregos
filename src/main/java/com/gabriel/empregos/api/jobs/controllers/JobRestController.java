@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import com.gabriel.empregos.core.permissions.empregosPermissions;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ import com.gabriel.empregos.api.jobs.dtos.JobResponse;
 import com.gabriel.empregos.api.jobs.mappers.JobMapper;
 import com.gabriel.empregos.core.exceptions.JobNotFoundException;
 import com.gabriel.empregos.core.repositories.JobRepository;
-import com.gabriel.empregos.core.services.auth.AuthenticatedUser;
+import com.gabriel.empregos.core.services.auth.SecurityService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +32,7 @@ public class JobRestController {
 
     private final JobRepository jobRepository;
     private final JobMapper jobMapper;
+    private final SecurityService securityService;
 
     @GetMapping
     public List<JobResponse> findAll() {
@@ -54,17 +54,16 @@ public class JobRestController {
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('COMPANY')")
-    public JobResponse create(@RequestBody @Valid JobRequest jobRequest, Authentication authentication) {
+    @empregosPermissions.IsCompany
+    public JobResponse create(@RequestBody @Valid JobRequest jobRequest) {
         var job = jobMapper.toJob(jobRequest);
-        var user = (AuthenticatedUser) authentication.getPrincipal();
-        job.setCompany(user.getUser());
+        job.setCompany(securityService.getCurrentUser());
         job = jobRepository.save(job);
         return jobMapper.toJobResponse(job);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('COMPANY')")
+    @empregosPermissions.IsOwner
     public JobResponse update(@PathVariable Long id, @RequestBody @Valid JobRequest jobRequest) {
         var job = jobRepository.findById(id)
                 .orElseThrow(() -> new JobNotFoundException(id));
@@ -78,7 +77,7 @@ public class JobRestController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('COMPANY')")
+    @empregosPermissions.IsOwner
     public void delete(@PathVariable Long id) {
         var job = jobRepository.findById(id)
                 .orElseThrow(() -> new JobNotFoundException(id));
