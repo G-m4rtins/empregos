@@ -9,9 +9,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.gabriel.empregos.core.exceptions.JwtServiceException;
 import com.gabriel.empregos.core.services.jwt.JwtService;
 
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,22 +35,21 @@ public class AccessTokenRequestFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        try {
-            var token = "";
-            var email = "";
-            var header = request.getHeader(AUTHORIZATION_HEADER_KEY);
+        var header = request.getHeader(AUTHORIZATION_HEADER_KEY);
 
-            if (isTokenPresent(header)) {
-                token = header.substring(TOKEN_PREFIX.length());
-                email = jwtService.getSubFromAccessToken(token);
+        if (isTokenPresent(header)) {
+            try {
+                var token = header.substring(TOKEN_PREFIX.length());
+                var email = jwtService.getSubFromAccessToken(token);
+                if (isEmailValid(email)) {
+                    setAuthentication(request, email);
+                }
+            } catch (JwtServiceException e) {
+                // Token ausente/expirado/inválido: segue sem autenticação e deixa o Spring Security decidir o acesso.
             }
-            if (isEmailValid(email)) {
-                setAuthentication(request, email);
-            }
-            filterChain.doFilter(request, response);
-        } catch (JwtException e) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getLocalizedMessage());
         }
+
+        filterChain.doFilter(request, response);
     }
 
     private void setAuthentication(HttpServletRequest request, String email) {

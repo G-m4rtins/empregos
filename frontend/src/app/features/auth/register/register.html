@@ -1,0 +1,113 @@
+<div class="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center py-10">
+  <div class="card p-8">
+    <h1 class="text-2xl font-semibold text-neutral-900">Criar conta</h1>
+    <p class="mt-1 text-sm text-neutral-500">Leva menos de um minuto.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 space-y-4">
+      <div>
+        <span class="field-label">Você é</span>
+        <div class="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            (click)="selectRole('CANDIDATE')"
+            class="rounded-lg border px-3.5 py-2.5 text-sm font-medium transition"
+            [class]="form.controls.role.value === 'CANDIDATE'
+              ? 'border-brand-500 bg-brand-50 text-brand-700'
+              : 'border-neutral-300 text-neutral-600 hover:bg-neutral-50'"
+          >
+            Candidato
+          </button>
+          <button
+            type="button"
+            (click)="selectRole('COMPANY')"
+            class="rounded-lg border px-3.5 py-2.5 text-sm font-medium transition"
+            [class]="form.controls.role.value === 'COMPANY'
+              ? 'border-brand-500 bg-brand-50 text-brand-700'
+              : 'border-neutral-300 text-neutral-600 hover:bg-neutral-50'"
+          >
+            Empresa
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <label for="name" class="field-label">Nome</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          class="field-input"
+          [class.invalid]="form.controls.name.invalid && form.controls.name.touched"
+          placeholder="Seu nome ou nome da empresa"
+          autocomplete="name"
+        />
+        @if (form.controls.name.invalid && form.controls.name.touched) {
+          <p class="field-error">Informe um nome válido.</p>
+        }
+      </div>
+
+      <div>
+        <label for="email" class="field-label">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="field-input"
+          [class.invalid]="form.controls.email.invalid && form.controls.email.touched"
+          placeholder="voce@email.com"
+          autocomplete="email"
+        />
+        @if (form.controls.email.invalid && form.controls.email.touched) {
+          <p class="field-error">Informe um e-mail válido.</p>
+        }
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label for="password" class="field-label">Senha</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            class="field-input"
+            [class.invalid]="form.controls.password.invalid && form.controls.password.touched"
+            placeholder="Mín. 6 caracteres"
+            autocomplete="new-password"
+          />
+          @if (form.controls.password.invalid && form.controls.password.touched) {
+            <p class="field-error">Mínimo de 6 caracteres.</p>
+          }
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="field-label">Confirmar senha</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            formControlName="confirmPassword"
+            class="field-input"
+            [class.invalid]="form.errors?.['mismatch'] && form.controls.confirmPassword.touched"
+            placeholder="Repita a senha"
+            autocomplete="new-password"
+          />
+          @if (form.errors?.['mismatch'] && form.controls.confirmPassword.touched) {
+            <p class="field-error">As senhas não coincidem.</p>
+          }
+        </div>
+      </div>
+
+      @if (errorMessage()) {
+        <p class="rounded-lg bg-red-50 px-3.5 py-2.5 text-sm text-red-600">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="btn-primary w-full" [disabled]="loading()">
+        {{ loading() ? 'Criando conta...' : 'Criar conta' }}
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-sm text-neutral-500">
+      Já tem uma conta?
+      <a routerLink="/login" class="font-medium text-brand-600 hover:text-brand-700">Entrar</a>
+    </p>
+  </div>
+</div>

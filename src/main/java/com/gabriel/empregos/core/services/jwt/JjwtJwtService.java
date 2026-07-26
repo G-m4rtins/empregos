@@ -52,7 +52,7 @@ public class JjwtJwtService implements JwtService {
 
     private String generateToken(String sub, String secret, Long expiresIn) {
         var now = Instant.now();
-        var expiration = now.plusMillis(expiresIn);
+        var expiration = now.plusSeconds(expiresIn);
         var key = Keys.hmacShaKeyFor(secret.getBytes());
         return Jwts.builder()
                 .setSubject(sub)

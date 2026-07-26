@@ -1,0 +1,126 @@
+<div class="min-h-screen flex flex-col bg-[#f3f3f3]">
+  <header class="sticky top-0 z-30 border-b border-neutral-200 bg-white/80 backdrop-blur">
+    <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+      <a routerLink="/vagas" class="text-lg font-semibold tracking-tight text-neutral-900" (click)="closeMenu()">
+        empregos<span class="text-brand-600">.</span>
+      </a>
+
+      <div class="hidden items-center gap-1 md:flex">
+        <a
+          routerLink="/vagas"
+          routerLinkActive="text-brand-700 bg-brand-50"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100"
+        >
+          Vagas
+        </a>
+
+        @if (auth.isCompany()) {
+          <a
+            routerLink="/vagas/nova"
+            routerLinkActive="text-brand-700 bg-brand-50"
+            class="rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100"
+          >
+            Publicar vaga
+          </a>
+          <a
+            routerLink="/skills"
+            routerLinkActive="text-brand-700 bg-brand-50"
+            class="rounded-lg px-3 py-2 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100"
+          >
+            Skills
+          </a>
+        }
+      </div>
+
+      <div class="hidden items-center gap-3 md:flex">
+        @if (auth.isAuthenticated()) {
+          <span class="text-sm text-neutral-500">
+            Olá, <span class="font-medium text-neutral-800">{{ auth.currentUser()?.name }}</span>
+          </span>
+          <button
+            type="button"
+            (click)="logout()"
+            class="rounded-lg border border-neutral-200 px-3 py-1.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100"
+          >
+            Sair
+          </button>
+        } @else {
+          <a routerLink="/login" class="rounded-lg px-3 py-1.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100">
+            Entrar
+          </a>
+          <a
+            routerLink="/cadastro"
+            class="rounded-lg bg-brand-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-brand-700"
+          >
+            Cadastrar
+          </a>
+        }
+      </div>
+
+      <button
+        type="button"
+        (click)="toggleMenu()"
+        class="rounded-lg p-2 text-neutral-600 hover:bg-neutral-100 md:hidden"
+        [attr.aria-expanded]="menuOpen()"
+        aria-label="Abrir menu"
+      >
+        @if (menuOpen()) {
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+          </svg>
+        }
+      </button>
+    </nav>
+
+    @if (menuOpen()) {
+      <div class="border-t border-neutral-200 bg-white px-4 py-3 md:hidden">
+        <div class="flex flex-col gap-1">
+          <a routerLink="/vagas" (click)="closeMenu()" class="rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100">
+            Vagas
+          </a>
+          @if (auth.isCompany()) {
+            <a routerLink="/vagas/nova" (click)="closeMenu()" class="rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100">
+              Publicar vaga
+            </a>
+            <a routerLink="/skills" (click)="closeMenu()" class="rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100">
+              Skills
+            </a>
+          }
+          <div class="my-2 border-t border-neutral-200"></div>
+          @if (auth.isAuthenticated()) {
+            <span class="px-3 py-1 text-sm text-neutral-500">
+              Olá, <span class="font-medium text-neutral-800">{{ auth.currentUser()?.name }}</span>
+            </span>
+            <button
+              type="button"
+              (click)="logout()"
+              class="rounded-lg px-3 py-2 text-left text-sm font-medium text-neutral-700 hover:bg-neutral-100"
+            >
+              Sair
+            </button>
+          } @else {
+            <a routerLink="/login" (click)="closeMenu()" class="rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100">
+              Entrar
+            </a>
+            <a routerLink="/cadastro" (click)="closeMenu()" class="rounded-lg px-3 py-2 text-sm font-medium text-brand-700 hover:bg-neutral-100">
+              Cadastrar
+            </a>
+          }
+        </div>
+      </div>
+    }
+  </header>
+
+  <main class="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6">
+    <router-outlet />
+  </main>
+
+  <footer class="border-t border-neutral-200 py-6 text-center text-sm text-neutral-400">
+    empregos © {{ currentYear }}
+  </footer>
+</div>

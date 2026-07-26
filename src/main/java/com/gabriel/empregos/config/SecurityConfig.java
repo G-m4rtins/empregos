@@ -31,6 +31,8 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(customizer -> customizer
                 .anyRequest().permitAll())
+                .cors(customizer -> {
+                })
                 .csrf(customizer -> customizer
                         .disable())
                 .sessionManagement(customizer -> customizer

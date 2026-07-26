@@ -1,0 +1,91 @@
+<div class="mx-auto max-w-2xl">
+  <h1 class="text-2xl font-semibold text-neutral-900">Skills</h1>
+  <p class="mt-1 text-sm text-neutral-500">Gerencie as skills disponíveis para associar às suas vagas.</p>
+
+  <div class="card mt-6 p-5">
+    <form (ngSubmit)="createSkill()" class="flex gap-3">
+      <input
+        type="text"
+        [ngModel]="newSkillName()"
+        (ngModelChange)="newSkillName.set($event)"
+        name="newSkillName"
+        placeholder="Nome da nova skill"
+        class="field-input"
+      />
+      <button type="submit" class="btn-primary shrink-0" [disabled]="creating() || !newSkillName().trim()">
+        {{ creating() ? 'Criando...' : 'Adicionar' }}
+      </button>
+    </form>
+    @if (createError()) {
+      <p class="field-error">{{ createError() }}</p>
+    }
+  </div>
+
+  <div class="card mt-4 divide-y divide-neutral-100">
+    @if (loading()) {
+      <div class="p-5 text-sm text-neutral-500">Carregando...</div>
+    } @else if (errorMessage()) {
+      <p class="p-5 text-sm text-red-600">{{ errorMessage() }}</p>
+    } @else if (skills().length === 0) {
+      <div class="p-8 text-center text-sm text-neutral-500">Nenhuma skill cadastrada ainda.</div>
+    } @else {
+      @for (skill of skills(); track skill.id) {
+        <div class="flex items-center gap-3 p-4">
+          @if (editingId() === skill.id) {
+            <input
+              type="text"
+              [ngModel]="editingName()"
+              (ngModelChange)="editingName.set($event)"
+              name="editingName"
+              class="field-input flex-1"
+            />
+            <button
+              type="button"
+              (click)="saveEdit(skill.id)"
+              [disabled]="savingEditId() === skill.id"
+              class="btn-primary"
+            >
+              Salvar
+            </button>
+            <button type="button" (click)="cancelEdit()" class="btn-secondary">Cancelar</button>
+          } @else {
+            <span class="flex-1 text-sm font-medium text-neutral-800">{{ skill.name }}</span>
+            <button type="button" (click)="startEdit(skill)" class="btn-secondary">Editar</button>
+            <button
+              type="button"
+              (click)="removeSkill(skill.id)"
+              [disabled]="deletingId() === skill.id"
+              class="btn-danger"
+            >
+              {{ deletingId() === skill.id ? 'Removendo...' : 'Remover' }}
+            </button>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  @if (pageInfo(); as page) {
+    @if (page.totalPages > 1) {
+      <div class="mt-4 flex items-center justify-between">
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="page.number === 0"
+          (click)="loadPage(page.number)"
+        >
+          Anterior
+        </button>
+        <span class="text-sm text-neutral-500">Página {{ page.number + 1 }} de {{ page.totalPages }}</span>
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="page.number + 1 >= page.totalPages"
+          (click)="loadPage(page.number + 2)"
+        >
+          Próxima
+        </button>
+      </div>
+    }
+  }
+</div>

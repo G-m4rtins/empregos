@@ -1,0 +1,132 @@
+<div class="mx-auto max-w-2xl">
+  <a routerLink="/vagas" class="text-sm font-medium text-neutral-500 hover:text-neutral-700">← Voltar</a>
+
+  <div class="card mt-4 p-6 sm:p-8">
+    <h1 class="text-2xl font-semibold text-neutral-900">{{ isEdit ? 'Editar vaga' : 'Publicar vaga' }}</h1>
+
+    @if (loading()) {
+      <div class="mt-6 h-72 animate-pulse rounded-lg bg-neutral-100"></div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 space-y-4">
+        <div>
+          <label for="title" class="field-label">Título</label>
+          <input
+            id="title"
+            type="text"
+            formControlName="title"
+            class="field-input"
+            [class.invalid]="form.controls.title.invalid && form.controls.title.touched"
+            placeholder="Ex: Desenvolvedor(a) Backend Java"
+          />
+          @if (form.controls.title.invalid && form.controls.title.touched) {
+            <p class="field-error">Informe um título entre 3 e 100 caracteres.</p>
+          }
+        </div>
+
+        <div>
+          <label for="description" class="field-label">Descrição</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            rows="4"
+            class="field-input"
+            [class.invalid]="form.controls.description.invalid && form.controls.description.touched"
+            placeholder="Descreva as responsabilidades e requisitos da vaga"
+          ></textarea>
+          @if (form.controls.description.invalid && form.controls.description.touched) {
+            <p class="field-error">A descrição deve ter entre 10 e 255 caracteres.</p>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="location" class="field-label">Localização</label>
+            <input
+              id="location"
+              type="text"
+              formControlName="location"
+              class="field-input"
+              [class.invalid]="form.controls.location.invalid && form.controls.location.touched"
+              placeholder="Ex: Remoto, São Paulo - SP"
+            />
+            @if (form.controls.location.invalid && form.controls.location.touched) {
+              <p class="field-error">Informe a localização.</p>
+            }
+          </div>
+
+          <div>
+            <label for="salary" class="field-label">Salário (R$)</label>
+            <input
+              id="salary"
+              type="number"
+              min="0"
+              step="0.01"
+              formControlName="salary"
+              class="field-input"
+              [class.invalid]="form.controls.salary.invalid && form.controls.salary.touched"
+            />
+            @if (form.controls.salary.invalid && form.controls.salary.touched) {
+              <p class="field-error">Informe um salário válido.</p>
+            }
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label for="jobType" class="field-label">Tipo</label>
+            <select id="jobType" formControlName="jobType" class="field-input">
+              @for (option of typeOptions; track option[0]) {
+                <option [value]="option[0]">{{ option[1] }}</option>
+              }
+            </select>
+          </div>
+
+          <div>
+            <label for="jobLevel" class="field-label">Nível</label>
+            <select id="jobLevel" formControlName="jobLevel" class="field-input">
+              @for (option of levelOptions; track option[0]) {
+                <option [value]="option[0]">{{ option[1] }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <span class="field-label">Skills desejadas</span>
+          @if (availableSkills().length === 0) {
+            <p class="text-sm text-neutral-500">
+              Nenhuma skill cadastrada ainda.
+              <a routerLink="/skills" class="font-medium text-brand-600 hover:text-brand-700">Cadastre skills</a>.
+            </p>
+          } @else {
+            <div class="flex flex-wrap gap-2">
+              @for (skill of availableSkills(); track skill.id) {
+                <button
+                  type="button"
+                  (click)="toggleSkill(skill.id)"
+                  class="rounded-full border px-3 py-1.5 text-sm font-medium transition"
+                  [class]="selectedSkillIds().has(skill.id)
+                    ? 'border-brand-500 bg-brand-50 text-brand-700'
+                    : 'border-neutral-300 text-neutral-600 hover:bg-neutral-50'"
+                >
+                  {{ skill.name }}
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        @if (errorMessage()) {
+          <p class="rounded-lg bg-red-50 px-3.5 py-2.5 text-sm text-red-600">{{ errorMessage() }}</p>
+        }
+
+        <div class="flex justify-end gap-3 pt-2">
+          <a routerLink="/vagas" class="btn-secondary">Cancelar</a>
+          <button type="submit" class="btn-primary" [disabled]="saving()">
+            {{ saving() ? 'Salvando...' : isEdit ? 'Salvar alterações' : 'Publicar vaga' }}
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+</div>

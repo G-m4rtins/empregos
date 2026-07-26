@@ -33,8 +33,9 @@ public class SecurityService {
             throw new InsufficientAuthenticationException("Não ha usuario logado");
         }
 
-        var authentication = (AuthenticatedUser) getAuthentication();
-        return authentication.getUser();
+        var authentication = getAuthentication();
+        var authenticatedUser = (AuthenticatedUser) authentication.getPrincipal();
+        return authenticatedUser.getUser();
     }
 
     public boolean isOwner(String companyEmail, Long jobId) {

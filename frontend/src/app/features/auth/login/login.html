@@ -1,0 +1,53 @@
+<div class="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center py-10">
+  <div class="card p-8">
+    <h1 class="text-2xl font-semibold text-neutral-900">Entrar</h1>
+    <p class="mt-1 text-sm text-neutral-500">Acesse sua conta para continuar.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 space-y-4">
+      <div>
+        <label for="email" class="field-label">E-mail</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="field-input"
+          [class.invalid]="form.controls.email.invalid && form.controls.email.touched"
+          placeholder="voce@email.com"
+          autocomplete="email"
+        />
+        @if (form.controls.email.invalid && form.controls.email.touched) {
+          <p class="field-error">Informe um e-mail válido.</p>
+        }
+      </div>
+
+      <div>
+        <label for="password" class="field-label">Senha</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="field-input"
+          [class.invalid]="form.controls.password.invalid && form.controls.password.touched"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
+        @if (form.controls.password.invalid && form.controls.password.touched) {
+          <p class="field-error">A senha é obrigatória.</p>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <p class="rounded-lg bg-red-50 px-3.5 py-2.5 text-sm text-red-600">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="btn-primary w-full" [disabled]="loading()">
+        {{ loading() ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-sm text-neutral-500">
+      Não tem uma conta?
+      <a routerLink="/cadastro" class="font-medium text-brand-600 hover:text-brand-700">Cadastre-se</a>
+    </p>
+  </div>
+</div>

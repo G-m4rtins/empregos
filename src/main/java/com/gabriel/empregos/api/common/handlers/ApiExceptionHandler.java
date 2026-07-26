@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,6 +40,14 @@ public class ApiExceptionHandler {
                 return ValidationErrorResponse.builder()
                                 .message("Validation failed")
                                 .errors(errors)
+                                .build();
+        }
+
+        @ExceptionHandler(DataIntegrityViolationException.class)
+        @ResponseStatus(HttpStatus.CONFLICT)
+        public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+                return ErrorResponse.builder()
+                                .message("Já existe um registro com esses dados")
                                 .build();
         }
 

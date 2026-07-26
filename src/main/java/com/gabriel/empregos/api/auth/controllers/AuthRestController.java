@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import com.gabriel.empregos.api.auth.dtos.UserResponse;
 import com.gabriel.empregos.api.auth.mappers.UserMapper;
 import com.gabriel.empregos.core.models.User;
 import com.gabriel.empregos.core.repositories.UserRepository;
+import com.gabriel.empregos.core.services.auth.SecurityService;
 import com.gabriel.empregos.core.services.jwt.JwtService;
 
 import jakarta.validation.Valid;
@@ -33,6 +35,7 @@ public class AuthRestController {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final SecurityService securityService;
 
     @PostMapping("/register")
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -66,6 +69,12 @@ public class AuthRestController {
                 .accessToken(jwtService.generateAccessToken(subject))
                 .refreshToken(jwtService.generateRefreshToken(subject))
                 .build();
+    }
+
+    @GetMapping("/me")
+    @ResponseStatus(code = HttpStatus.OK)
+    public UserResponse me() {
+        return userMapper.toUserResponse(securityService.getCurrentUser());
     }
 
 }
